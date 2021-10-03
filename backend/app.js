@@ -3,6 +3,8 @@ var typeorm = require("typeorm");
 
 const bodyParser = require('body-parser');
 
+const app = express();
+
 typeorm.createConnection({
     type: "mysql",
     host: "localhost",
@@ -17,8 +19,6 @@ typeorm.createConnection({
     ]
 })
 .then(function (connection) {
-
-    var app = express();
 
     //CROS resolved : permet de donner acces à notre serveur pour tous les origines
     app.use((req, res, next) => {
@@ -35,9 +35,9 @@ typeorm.createConnection({
         res.json({ message: 'Votre requête a bien été reçue !' }); 
     });
 
-    module.exports = app;
-
 })
 .catch(function(error) {
     console.log("Error: ", error);
 });
+
+module.exports = app;
