@@ -1,0 +1,14 @@
+{
+   "name": "backend",
+   "version": "0.0.1",
+   "description": "Backend project using only node, express and TypeORM (without Typescript)",
+   "dependencies": {
+      "body-parser": "^1.19.0",
+      "express": "^4.17.1",
+      "mysql": "^2.14.1",
+      "typeorm": "0.2.37"
+   },
+   "scripts": {
+      "start": "node src/index.js"
+   }
+}
