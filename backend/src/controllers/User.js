@@ -27,7 +27,7 @@ exports.showAll = (request, response, next) => {
 exports.signup = (request, response, next) => {
     
     //Fonction n°1 : contrôler que l'utilisateur n'existe pas déjà
-    console.log(request.body);
+
     //Fonction n°2 : contrôler que l'adresse mail et le mot de passe respectent les règles de création
 
     const userRepo = connection.getRepository("User");
@@ -42,6 +42,7 @@ exports.signup = (request, response, next) => {
         userRepo.save(user)
         .then(() => response.status(201).json({ message: 'Utilisateur créé !' }))
         .catch(error => response.status(400).json({ error }));
+        //error.driverError.errno = 1062 -> duplicate entry
     })
     .catch(error => {
         response.status(500).json({ error })
