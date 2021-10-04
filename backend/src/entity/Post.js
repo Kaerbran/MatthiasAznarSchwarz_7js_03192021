@@ -2,26 +2,41 @@ var EntitySchema = require("typeorm").EntitySchema;
 
 module.exports = new EntitySchema({
     name: "Post", // Will use table name `post` as default behaviour.
-    tableName: "posts", // Optional: Provide `tableName` property to override the default behaviour for table name. 
+    tableName: "Table_Posts", // Optional: Provide `tableName` property to override the default behaviour for table name. 
     columns: {
-        id: {
+        Post_ID: {
             primary: true,
-            type: "int",
+            type: "int",    //uuid
             generated: true
         },
-        title: {
+        Post_Picture: {
             type: "varchar"
         },
-        text: {
+        Post_Location: {
+            type: "varchar"
+        },
+        Post_Date_published: {
+            type: "datetime",
+            CreateDateColumn : true
+        },
+        Post_Date_modified: {
+            type: "datetime",
+            UpdateDateColumn : true
+        },
+        Post_Comment: {
             type: "text"
         }
     },
     relations: {
-        categories: {
-            target: "Category",
-            type: "many-to-many",
+        Table_Personnes: {
+            target: "User",
+            type: "many-to-one",
             joinTable: true,
             cascade: true
         }
     }
 });
+
+//type : datetime
+// special column -> @CreateDateColumn 
+// special column -> @UpdateDateColumn

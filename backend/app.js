@@ -3,6 +3,10 @@ var typeorm = require("typeorm");
 
 const bodyParser = require('body-parser');
 
+//Importation des routes
+//const postRoutes = require('./src/routes/post');
+const userRoutes = require('./src/routes/user');
+
 const app = express();
 
 typeorm.createConnection({
@@ -15,7 +19,7 @@ typeorm.createConnection({
     synchronize: true,
     entities: [
         require("./src/entity/Post"),
-        require("./src/entity/Category")
+        require("./src/entity/User")
     ]
 })
 .then(function (connection) {
@@ -31,9 +35,13 @@ typeorm.createConnection({
     //Déclarer comment on souhaite utiliser ces API
     app.use(bodyParser.json());
 
-    app.use((req, res) => {
+    // setup express app here
+    //app.use('/api/post', postRoutes);
+    app.use('/api/auth', userRoutes);
+
+    /*app.use((req, res) => {
         res.json({ message: 'Votre requête a bien été reçue !' }); 
-    });
+    });*/
 
 })
 .catch(function(error) {
