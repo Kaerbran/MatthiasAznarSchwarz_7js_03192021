@@ -1,3 +1,6 @@
+//Import the entity model
+const User = require('../entity/User');
+
 var EntitySchema = require("typeorm").EntitySchema;
 
 module.exports = new EntitySchema({
@@ -31,6 +34,7 @@ module.exports = new EntitySchema({
         Table_Personnes: {
             target: "User",
             type: "many-to-one",
+
             joinTable: true,
             cascade: true
         }

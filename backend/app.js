@@ -2,9 +2,11 @@ var express = require('express');
 var typeorm = require("typeorm");
 
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
+const path = require('path');   //nécessaire pour 'multer'
 
 //Importation des routes
-//const postRoutes = require('./src/routes/post');
+const postRoutes = require('./src/routes/post');
 const userRoutes = require('./src/routes/user');
 
 const app = express();
@@ -35,8 +37,14 @@ typeorm.createConnection({
     //Déclarer comment on souhaite utiliser ces API
     app.use(bodyParser.json());
 
+    //app.use(helmet());
+
+    //app.use('/images', express.static(path.join(__dirname, 'images'))); //pour 'multer'
+
+    //app.use("/api/", rateLimiter.apiLimiter);
+
     // setup express app here
-    //app.use('/api/post', postRoutes);
+    app.use('/api/post', postRoutes);
     app.use('/api/auth', userRoutes);
 
     /*app.use((req, res) => {

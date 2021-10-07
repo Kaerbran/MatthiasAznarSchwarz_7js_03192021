@@ -12,6 +12,12 @@ const jwt = require('jsonwebtoken');
 const validateSchema = require('../entity/password');
 
 exports.showAll = (request, response, next) => {
+
+    /* ---------------------------------------
+            Cette API est a supprimer, ou limiter. Puisque
+            dangereuse pour la sécurité de l'application
+    --------------------------------------- */
+
     const userRepo = connection.getRepository("User");
     try {
         userRepo.find()
@@ -57,7 +63,7 @@ exports.login = (request, response, next) => {
     .then((user) => {
         console.log("User that logged in: ", user);
         if (!user) {
-            return response.status(401).json({ error: 'Utilisateur non trouvé !' });
+            return response.status(204).json({ error: 'Utilisateur non trouvé !' });
         }
         bcrypt.compare(request.body.password, user.Person_Password)
         .then(valid => {
@@ -82,9 +88,6 @@ exports.delete = (request, response, next) => {
     
     /*Fonction supplémentaire à coder : avant de supprimer un utilisateur, il faut 
     penser à supprimer tous les posts que l'utilisateur à crée*/
-
-    console.log(request.body);
-    console.log(request.params);
 
     const userRepo = connection.getRepository("User");
     userRepo.findOne({ Person_ID: request.body.User_ID })

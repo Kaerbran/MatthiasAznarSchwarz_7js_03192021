@@ -1,3 +1,6 @@
+//Import the entity model
+const Post = require('../entity/Post');
+
 var EntitySchema = require("typeorm").EntitySchema;
 
 module.exports = new EntitySchema({
@@ -33,7 +36,8 @@ module.exports = new EntitySchema({
             target: "Post", 
             type: "one-to-many",
             joinTable: true,
-            cascade: true
+            cascade: true,
+            //Post: Post[];
         }
     }
 });
