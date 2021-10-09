@@ -9,8 +9,7 @@ module.exports = new EntitySchema({
     columns: {
         Person_ID: {
             primary: true,
-            type: "int",   //uuid
-            generated: true
+            generated: "uuid"
         },
         Person_Email: {
             type: "varchar",
@@ -28,16 +27,16 @@ module.exports = new EntitySchema({
         Person_Picture: {
             type: "varchar",
             lenght : 150,
-            default: "profile.png"
-        }
-    },
-    relations: {
-        Table_Posts: {
-            target: "Post", 
-            type: "one-to-many",
-            joinTable: true,
-            cascade: true,
-            //Post: Post[];
+            default: "profile_icon.png"
+        },
+        Personnes_Date_created: {
+            type: "datetime",
+            createDate: true
+        },
+        Person_ArrayPosts: {
+            SimpleColumnType: "simple-array",
+            type: "int",
+            nullable: true,       
         }
     }
 });

@@ -14,7 +14,7 @@ const validateSchema = require('../entity/password');
 exports.showAll = (request, response, next) => {
 
     /* ---------------------------------------
-            Cette API est a supprimer, ou limiter. Puisque
+            Ce controller est a supprimer, ou limiter. Puisque
             dangereuse pour la sécurité de l'application
     --------------------------------------- */
 
@@ -39,7 +39,7 @@ exports.signup = (request, response, next) => {
             const user = userRepo.create({
                 Person_Login: request.body.login,
                 Person_Email: request.body.email.toString().toLowerCase(),
-                Person_Picture: "placeholder",
+                Person_Picture: "profile_icon.png",
                 Person_Password: hash
             })
             userRepo.save(user)
@@ -52,6 +52,16 @@ exports.signup = (request, response, next) => {
     .catch(error => {
         response.status(500).json({ error })
     }); 
+};
+
+exports.modifyUser = (request, response, next) => {
+    
+    /* ---------------------------------------
+            Ce controller doit permettre de:
+                - mettre à jour l'image de l'utilisateur
+                - modifier les divers informations de l'utilisateur
+    --------------------------------------- */
+    
 };
   
 exports.login = (request, response, next) => {

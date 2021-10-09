@@ -9,38 +9,28 @@ module.exports = new EntitySchema({
     columns: {
         Post_ID: {
             primary: true,
-            type: "int",    //uuid
-            generated: true
+            generated: "uuid"
         },
         Post_Picture: {
             type: "varchar"
         },
         Post_Location: {
-            type: "varchar"
+            type: "varchar",
+            lenght : 150
         },
         Post_Date_published: {
             type: "datetime",
-            CreateDateColumn : true
+            createDate: true
         },
         Post_Date_modified: {
             type: "datetime",
-            UpdateDateColumn : true
+            updateDate: true
         },
         Post_Comment: {
             type: "text"
-        }
-    },
-    relations: {
-        Table_Personnes: {
-            target: "User",
-            type: "many-to-one",
-
-            joinTable: true,
-            cascade: true
+        },
+        Post_Creator: {
+            type: "int",
         }
     }
 });
-
-//type : datetime
-// special column -> @CreateDateColumn 
-// special column -> @UpdateDateColumn
