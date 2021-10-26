@@ -1,6 +1,3 @@
-//Import the entity model
-const User = require('../entity/User');
-
 var EntitySchema = require("typeorm").EntitySchema;
 
 module.exports = new EntitySchema({
@@ -30,7 +27,7 @@ module.exports = new EntitySchema({
             type: "text"
         },
         Post_Creator: {
-            type: "int",
+            type: "varchar",
         }
     }
 });

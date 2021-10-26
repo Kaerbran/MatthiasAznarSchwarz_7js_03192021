@@ -2,17 +2,24 @@
 const User = require('../entity/User');
 const Post = require('../entity/Post');
 
+//Import de la librarie node qui permet de gerer les documents 
+const fs = require('fs');
+
 //Import divers
 const getRepository = require('typeorm');
 const connection = require('typeorm');
 //const { request } = require('../../app');
 
+/* !!!!!!! NOT TESTED !!!!!!! */
 exports.createPost = (request, response, next) => {
     
     /* ----------------- à rajouter --------------------
     Integere multer pour le chargement de nouvelles images. Et
     éventuellement faire un resize de ces dernières avant stockage.
     ----------------- à rajouter -------------------- */
+
+    console.log(request.body);
+    console.log(request.file);
 
     try {
         const postRepo = connection.getRepository("Post");
@@ -27,11 +34,22 @@ exports.createPost = (request, response, next) => {
         postRepo.save(post)
         .then((postCreated) => {
             
+            console.log(postCreated);
+
             //on ajoute ici ID_Post à la fiche de l'utilisateur
             userRepo.findOne({ Person_ID: request.body.user_id })
             .then((userToUpdate)=>{
+                
+                console.log(userToUpdate);
+                console.log(userToUpdate.Person_ArrayPosts);
+                
                 //Ci-dessous : On rajoute le post dans l'array de l'utilisateur
-                userToUpdate.Person_ArrayPosts.push(postCreated.Post_ID);
+                if (userToUpdate.Person_ArrayPosts === undefined) {
+                    userToUpdate.Person_ArrayPosts = [postCreated.Post_ID];
+                } else {
+                    userToUpdate.Person_ArrayPosts.push(postCreated.Post_ID);
+                }
+                
                 userRepo.save(userToUpdate)
                 .then(()=>{
                     //on déclare la création comme étant terminée
@@ -46,6 +64,7 @@ exports.createPost = (request, response, next) => {
     }
 };
 
+/* !!!!!!! NOT TESTED !!!!!!! */
 exports.getOnePost = (request, response, next) => {
     const postRepo = connection.getRepository("Post");
     postRepo.findOne({ Post_ID: request.body.Post_ID })
@@ -59,6 +78,7 @@ exports.getOnePost = (request, response, next) => {
     .catch(error => response.status(500).json({ error }));
 };
 
+/* !!!!!!! NOT TESTED !!!!!!! */
 exports.getAllPosts = (request, response, next) => {
     const postRepo = connection.getRepository("Post");
     try {
@@ -72,30 +92,23 @@ exports.getAllPosts = (request, response, next) => {
     }
 };
 
+/* !!!!!!! NOT TESTED !!!!!!! */
 exports.getNextPosts = (request, response, next) => {
-    /* ---------------------------------------
-            Parametre d'entree : 
-            -> :limit -> incrément (10 par 10 par exemple)
-            -> :offset -> n° de la page
-
-            Permet de ne pas télécharger toute la base de données. Mais au
-            contraire, juste page par page.
-    --------------------------------------- */
-
     const postRepo = connection.getRepository("Post");
     postRepo.find({
         order: {
-            columnName: "Post_Date_published"
+            Post_Date_published: "ASC"
         },
-        skip: 5,
-        take: 10
+        skip: 5, //request.params.offset
+        take: 10 //request.params.limit
     })
-    .then()
-    .catch();
-    //request.params.limit
-    //request.params.offset
+    .then((posts)=> {
+        return response.status(201).json({ posts });
+    })
+    .catch(error => response.status(401).json({ error }));
 };
 
+/* !!!!!!! NOT TESTED !!!!!!! */
 exports.modifyPost = (request, response, next) => {
     
     const postRepo = connection.getRepository("Post");
@@ -115,6 +128,7 @@ exports.modifyPost = (request, response, next) => {
     .catch((error) => response.status(500).json({ error }));
 };
 
+/* !!!!!!! NOT TESTED !!!!!!! */
 exports.deletePost = (request, response, next) => {
     const postRepo = connection.getRepository("Post");
     postRepo.findOne({ Post_ID: request.body.Post_ID })

@@ -1,6 +1,3 @@
-//Import the entity model
-const Post = require('../entity/Post');
-
 var EntitySchema = require("typeorm").EntitySchema;
 
 module.exports = new EntitySchema({
@@ -32,11 +29,6 @@ module.exports = new EntitySchema({
         Personnes_Date_created: {
             type: "datetime",
             createDate: true
-        },
-        Person_ArrayPosts: {
-            SimpleColumnType: "simple-array",
-            type: "int",
-            nullable: true,       
         }
     }
 });

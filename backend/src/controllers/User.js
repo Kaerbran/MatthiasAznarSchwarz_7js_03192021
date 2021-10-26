@@ -2,6 +2,9 @@
 const User = require('../entity/User');
 const Post = require('../entity/Post');
 
+//Import de la librarie node qui permet de gerer les documents 
+const fs = require('fs');
+
 //Import divers
 const getRepository = require('typeorm');
 const connection = require('typeorm');
