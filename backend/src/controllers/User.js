@@ -57,13 +57,34 @@ exports.signup = (request, response, next) => {
     }); 
 };
 
-exports.modifyUser = (request, response, next) => {
-    
+exports.modify = (request, response, next) => {
+    console.log("request:")
+    console.log(request);
+    console.log("request.body:");
+    console.log(request.body);
+
     /* ---------------------------------------
             Ce controller doit permettre de:
                 - mettre à jour l'image de l'utilisateur
                 - modifier les divers informations de l'utilisateur
     --------------------------------------- */
+
+    const userRepo = connection.getRepository("User");
+    userRepo.findOne({ Person_Email: request.body.user_email.toString().toLowerCase() })
+    .then((userToUpdate)=>{
+        userToUpdate.Person_Login = request.body.login;
+
+        if (request.file) {
+            userToUpdate.Person_Picture = `${request.protocol}://${request.get('host')}/images/${request.file.filename}`
+        }
+        
+        userRepo.save(userToUpdate)
+        .then(()=>{
+            return response.status(201).json({ message: 'User modifié !'});
+        })
+        .catch((error) => response.status(400).json({ error }));
+    })
+    .catch((error) => response.status(500).json({ error }));
     
 };
   
@@ -89,7 +110,9 @@ exports.login = (request, response, next) => {
                     { userId: user.Person_ID },
                     'RANDOM_TOKEN_SECRET',
                     { expiresIn: '24h' }
-                )   
+                ),
+                userLogin: user.Person_Login,
+                userEmail: user.Person_Email
             });
         })
         .catch(error => response.status(500).json({ error }));

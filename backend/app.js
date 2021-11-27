@@ -38,7 +38,7 @@ typeorm.createConnection({
     app.use(bodyParser.json());
 
     //app.use(helmet());
-    //app.use('/images', express.static(path.join(__dirname, 'images'))); //pour 'multer'
+    app.use('/images', express.static(path.join(__dirname, 'images'))); //pour 'multer'
     //app.use("/api/", rateLimiter.apiLimiter);
 
     // setup express app here

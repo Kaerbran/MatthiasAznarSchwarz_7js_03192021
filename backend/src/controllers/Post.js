@@ -23,39 +23,29 @@ exports.createPost = (request, response, next) => {
 
     try {
         const postRepo = connection.getRepository("Post");
-        const userRepo = connection.getRepository("User");
+        const linkUserPostRepo = connection.getRepository("Post&User");
 
         const post = postRepo.create({
             Post_Comment: request.body.comment,
             Post_Location: request.body.location,
-            Post_Picture: "placeholder.png",    //`${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+            Post_Picture: "placeholder.png",    //`${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
             Post_Creator: request.body.user_id
-            })
+        })
         postRepo.save(post)
         .then((postCreated) => {
             
             console.log(postCreated);
 
-            //on ajoute ici ID_Post à la fiche de l'utilisateur
-            userRepo.findOne({ Person_ID: request.body.user_id })
-            .then((userToUpdate)=>{
-                
-                console.log(userToUpdate);
-                console.log(userToUpdate.Person_ArrayPosts);
-                
-                //Ci-dessous : On rajoute le post dans l'array de l'utilisateur
-                if (userToUpdate.Person_ArrayPosts === undefined) {
-                    userToUpdate.Person_ArrayPosts = [postCreated.Post_ID];
-                } else {
-                    userToUpdate.Person_ArrayPosts.push(postCreated.Post_ID);
-                }
-                
-                userRepo.save(userToUpdate)
-                .then(()=>{
-                    //on déclare la création comme étant terminée
-                    response.status(201).json({ message: 'Post créé !' });
-                })
+            const linkUserPost = linkUserPostRepo.create({
+                Post_ID: postCreated.Post_ID,
+                User_ID: request.body.user_id,
             })
+            linkUserPostRepo.save(linkUserPost)
+        })
+        .then((linkUserPost_Created)=>{    
+            console.log(linkUserPost_Created);
+
+            response.status(201).json({ message: 'Post créé !' });
         })
         .catch(error => response.status(400).json({ error })); //error.driverError.errno = 1062 -> duplicate entry
     
@@ -84,11 +74,11 @@ exports.getAllPosts = (request, response, next) => {
     try {
         postRepo.find()
         .then((posts) => {
-            return response.status(201).json({ posts });
+            return response.status(201).json(posts);
         })
-        .catch(error => response.status(401).json({ error }));
+        .catch(error => response.status(401).json(error));
     } catch (error) {
-        return response.status(500).json({error});
+        return response.status(500).json(error);
     }
 };
 
@@ -138,27 +128,15 @@ exports.deletePost = (request, response, next) => {
             return response.status(401).json({ error: 'Publication non trouvée !' });
         }
         postRepo.remove(post)
-        .then((newPost) => {
-
-            //on supprime ici ID_Post qui se trouve dans la fiche de l'utilisateur
-            //on ajoute ici ID_Post à la fiche de l'utilisateur
-            userRepo.findOne({ Person_ID: request.body.user_id })
-            .then((modifiedUser)=>{
-                //Ci-dessous : on cherche l'index où se trouve 'Post_ID' et on le supprime de l'array
-                const index = modifiedUser.Person_ArrayPosts.indexOf(request.body.Post_ID);
-                if (index > -1) {
-                    modifiedUser.Person_ArrayPosts.splice(index, 1);
-                }
-
-                //Ci-dessous : on met l'utilisateur à jour, suite à la mise à jour de l'array
-                userRepo.save(modifiedUser)
-                .then(()=>{
-                    //on déclare la création comme étant terminée
-                    response.status(201).json({ message: 'Publication supprimée avec succes & Post_Id retiré de la liste utilisateur!' });
-                })
-            })
-        })
-        .catch(response.status(400).json({ error: 'Erreur interne' }));
     })
+    .then((deletedPost) => {
+
+        /*------------------------------------------------------------------------------------
+        Il manque la suppression de tous les liens entre ID utilisateurs et ID des publications
+        ------------------------------------------------------------------------------------*/
+
+        response.status(201).json({ message: 'Publication supprimée avec succes & Post_Id retiré de la liste utilisateur!' });
+    })
+    .catch(error => response.status(400).json({ error }))
     .catch(error => response.status(500).json({ error }));
 };
