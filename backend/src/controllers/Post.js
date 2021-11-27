@@ -29,7 +29,8 @@ exports.createPost = (request, response, next) => {
             Post_Comment: request.body.comment,
             Post_Location: request.body.location,
             Post_Picture: "placeholder.png",    //`${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-            Post_Creator: request.body.user_id
+            Post_Creator_ID: request.body.user_id,
+            Post_Creator: request.body.user
         })
         postRepo.save(post)
         .then((postCreated) => {

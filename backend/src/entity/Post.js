@@ -28,6 +28,9 @@ module.exports = new EntitySchema({
         },
         Post_Creator: {
             type: "varchar",
+        },
+        Post_Creator_ID: {
+            type: "varchar"
         }
     }
 });
