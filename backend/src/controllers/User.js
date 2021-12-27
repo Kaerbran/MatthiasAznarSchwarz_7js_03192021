@@ -42,6 +42,7 @@ exports.signup = (request, response, next) => {
             const user = userRepo.create({
                 Person_Login: request.body.login,
                 Person_Email: request.body.email.toString().toLowerCase(),
+                Person_Name: request.body.name,
                 Person_Picture: "profile_icon.png",
                 Person_Password: hash
             })
@@ -58,29 +59,36 @@ exports.signup = (request, response, next) => {
 };
 
 exports.modify = (request, response, next) => {
-    console.log("request:")
-    console.log(request);
-    console.log("request.body:");
-    console.log(request.body);
-
     /* ---------------------------------------
             Ce controller doit permettre de:
                 - mettre à jour l'image de l'utilisateur
                 - modifier les divers informations de l'utilisateur
     --------------------------------------- */
 
+    console.log("request within controller for user Modify:")
+    console.log(request);
+
     const userRepo = connection.getRepository("User");
-    userRepo.findOne({ Person_Email: request.body.user_email.toString().toLowerCase() })
+    userRepo.findOne({ Person_Email: request.body.user_email })
     .then((userToUpdate)=>{
         userToUpdate.Person_Login = request.body.login;
+        userToUpdate.Person_Name = request.body.name;
 
         if (request.file) {
             userToUpdate.Person_Picture = `${request.protocol}://${request.get('host')}/images/${request.file.filename}`
         }
         
         userRepo.save(userToUpdate)
-        .then(()=>{
-            return response.status(201).json({ message: 'User modifié !'});
+        .then((userUpdated)=>{
+            console.log(userUpdated);
+            return response.status(201).json({
+                userLogin: userUpdated.Person_Login,
+                userPicture: userUpdated.Person_Picture,
+                userEmail: userUpdated.Person_Email,
+                userId: userUpdated.Person_ID,
+                userName : userUpdated.Person_Name,
+                message: 'User modifié !'
+            });
         })
         .catch((error) => response.status(400).json({ error }));
     })
@@ -112,7 +120,9 @@ exports.login = (request, response, next) => {
                     { expiresIn: '24h' }
                 ),
                 userLogin: user.Person_Login,
-                userEmail: user.Person_Email
+                userEmail: user.Person_Email,
+                userPicture: user.Person_Picture,
+                userName : user.Person_Name
             });
         })
         .catch(error => response.status(500).json({ error }));

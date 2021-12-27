@@ -27,10 +27,14 @@ module.exports = new EntitySchema({
             type: "text"
         },
         Post_Creator: {
-            type: "varchar",
+            type: "varchar",    //login of the creator
         },
-        Post_Creator_ID: {
+        Post_Creator_ID: {      //id of the creator
             type: "varchar"
+        },
+        Post_Review: {
+            type: "boolean",
+            default: "0"        //0: okay for display      1: review is needed before showing post
         }
     }
 });

@@ -12,14 +12,10 @@ const connection = require('typeorm');
 
 /* !!!!!!! NOT TESTED !!!!!!! */
 exports.createPost = (request, response, next) => {
-    
     /* ----------------- à rajouter --------------------
     Integere multer pour le chargement de nouvelles images. Et
     éventuellement faire un resize de ces dernières avant stockage.
     ----------------- à rajouter -------------------- */
-
-    console.log(request.body);
-    console.log(request.file);
 
     try {
         const postRepo = connection.getRepository("Post");
@@ -28,14 +24,16 @@ exports.createPost = (request, response, next) => {
         const post = postRepo.create({
             Post_Comment: request.body.comment,
             Post_Location: request.body.location,
-            Post_Picture: "placeholder.png",    //`${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+            Post_Picture: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`, //Post_Picture: "placeholder.png",
             Post_Creator_ID: request.body.user_id,
-            Post_Creator: request.body.user
+            Post_Creator: request.body.user         
         })
         postRepo.save(post)
         .then((postCreated) => {
-            
             console.log(postCreated);
+
+            console.log("linkUserPostRepo existe?");
+            console.log(linkUserPostRepo);
 
             const linkUserPost = linkUserPostRepo.create({
                 Post_ID: postCreated.Post_ID,
