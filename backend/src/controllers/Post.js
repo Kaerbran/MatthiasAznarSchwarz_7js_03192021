@@ -37,7 +37,7 @@ exports.createPost = (request, response, next) => {
 
             const linkUserPost = linkUserPostRepo.create({
                 Post_ID: postCreated.Post_ID,
-                User_ID: request.body.user_id,
+                User_ID: postCreated.Post_Creator_ID,
             })
             linkUserPostRepo.save(linkUserPost)
         })
@@ -67,11 +67,38 @@ exports.getOnePost = (request, response, next) => {
     .catch(error => response.status(500).json({ error }));
 };
 
-/* !!!!!!! NOT TESTED !!!!!!! */
 exports.getAllPosts = (request, response, next) => {
     const postRepo = connection.getRepository("Post");
     try {
         postRepo.find()
+        .then((posts) => {
+            return response.status(201).json(posts);
+        })
+        .catch(error => response.status(401).json(error));
+    } catch (error) {
+        return response.status(500).json(error);
+    }
+};
+
+//Variante n°1 : getALLPosts with review = 0 (for Home page)
+exports.getAllPostsApproved = (request, response, next) => {
+    const postRepo = connection.getRepository("Post");
+    try {
+        postRepo.find({ where : {Post_Review: "0"}})
+        .then((posts) => {
+            return response.status(201).json(posts);
+        })
+        .catch(error => response.status(401).json(error));
+    } catch (error) {
+        return response.status(500).json(error);
+    }
+};
+
+//Variante n°2 : getAllPosts with review = 1 (for Admin page)
+exports.getAllPostsUnapproved = (request, response, next) => {
+    const postRepo = connection.getRepository("Post");
+    try {
+        postRepo.find({ where : {Post_Review: "1"}})
         .then((posts) => {
             return response.status(201).json(posts);
         })
