@@ -8,6 +8,8 @@ const fs = require('fs');
 //Import divers
 const getRepository = require('typeorm');
 const connection = require('typeorm');
+const { request } = require('express');
+const { response, post } = require('../../app');
 //const { request } = require('../../app');
 
 /* !!!!!!! NOT TESTED !!!!!!! */
@@ -143,6 +145,22 @@ exports.modifyPost = (request, response, next) => {
     })
     .catch((error) => response.status(500).json({ error }));
 };
+
+/* !!!!!!! NOT TESTED !!!!!!! */
+exports.reviewPost = (request, response, next) => {
+    const postRepo = connection.getRepository("Post");
+    postRepo.findOne({ Post_ID: request.body.Post_ID })
+    .then((postToUpdate) => {
+        postToUpdate.Post_Review = request.body.reviewStatus;
+        postRepo.save(postToUpdate)
+    })
+    .then((postUpdated) =>{
+        return response.status(201).json({ 
+            message: 'Post modifié !', 
+            post: postUpdated});
+    }).catch(error => response.status(500).json({ error }));
+}
+
 
 /* !!!!!!! NOT TESTED !!!!!!! */
 exports.deletePost = (request, response, next) => {
