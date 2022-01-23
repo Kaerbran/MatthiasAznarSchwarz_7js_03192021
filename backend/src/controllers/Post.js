@@ -84,6 +84,7 @@ exports.getAllPosts = (request, response, next) => {
 
 //Variante n°1 : getALLPosts with review = 0 (for Home page)
 exports.getAllPostsApproved = (request, response, next) => {
+    
     const postRepo = connection.getRepository("Post");
     try {
         postRepo.find({ where : {Post_Review: "0"}})
@@ -96,8 +97,35 @@ exports.getAllPostsApproved = (request, response, next) => {
     }
 };
 
+//Variante n°1 - optimisation : getALLPosts with review = 0 (for Home page)
+exports.getAllPostsProfileApproved = (request, response, next) => {
+
+    const postRepo = connection.getRepository("Post");
+    //const userRepo = connection.getRepository("User");
+    try {
+        postRepo.find({
+            join: {
+                alias: "Post",
+                leftJoinAndSelect: {
+                    User: "Post.Post_Creator_ID"
+                },
+            }, 
+            /*where: { 
+                Post_ID: ""
+            }*/
+        })
+        .then((posts) => {
+            return response.status(201).json(posts);
+        })
+        .catch(error => response.status(401).json(error));
+    } catch (error) {
+        return response.status(500).json(error);
+    }
+}
+
 //Variante n°2 : getAllPosts with review = 1 (for Admin page)
 exports.getAllPostsUnapproved = (request, response, next) => {
+    
     const postRepo = connection.getRepository("Post");
     try {
         postRepo.find({ where : {Post_Review: "1"}})
@@ -148,6 +176,7 @@ exports.modifyPost = (request, response, next) => {
 
 /* !!!!!!! NOT TESTED !!!!!!! */
 exports.reviewPost = (request, response, next) => {
+    
     const postRepo = connection.getRepository("Post");
     postRepo.findOne({ Post_ID: request.body.Post_ID })
     .then((postToUpdate) => {

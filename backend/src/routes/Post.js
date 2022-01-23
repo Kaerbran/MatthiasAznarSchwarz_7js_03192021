@@ -9,11 +9,13 @@ const auth = require('../middlewares/auth');
 
 router.get('/', postCtrl.getAllPosts);
 router.get('/approved', postCtrl.getAllPostsApproved);
+router.get('/approvedFull', postCtrl.getAllPostsProfileApproved);
 router.get('/unapproved', postCtrl.getAllPostsUnapproved);
 router.get('/:limit/:offset', postCtrl.getNextPosts);
 router.get('/:id', postCtrl.getOnePost);
 router.post('/', postCtrl.createPost);
-router.put('/:id', postCtrl.modifyPost);
+router.post('/modify', postCtrl.modifyPost);
+router.post('/review', postCtrl.reviewPost);
 router.delete('/:id', postCtrl.deletePost); 
 
 module.exports = router;
