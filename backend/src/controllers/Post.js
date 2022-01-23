@@ -175,6 +175,9 @@ exports.modifyPost = (request, response, next) => {
 };
 
 /* !!!!!!! NOT TESTED !!!!!!! */
+//Post_Review -> with default value at '0'
+//0: okay for display     
+//1: review is needed before showing post
 exports.reviewPost = (request, response, next) => {
     
     const postRepo = connection.getRepository("Post");
