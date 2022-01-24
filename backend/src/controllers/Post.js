@@ -110,9 +110,9 @@ exports.getAllPostsProfileApproved = (request, response, next) => {
                     User: "Post.Post_Creator_ID"
                 },
             }, 
-            /*where: { 
-                Post_ID: ""
-            }*/
+            where: { 
+                Post_Review: "0"
+            }
         })
         .then((posts) => {
             return response.status(201).json(posts);
@@ -183,7 +183,7 @@ exports.reviewPost = (request, response, next) => {
     const postRepo = connection.getRepository("Post");
     postRepo.findOne({ Post_ID: request.body.Post_ID })
     .then((postToUpdate) => {
-        postToUpdate.Post_Review = request.body.reviewStatus;
+        postToUpdate.Post_Review = request.body.reviewStatus;   //review status = 1 ou 0
         postRepo.save(postToUpdate)
     })
     .then((postUpdated) =>{
