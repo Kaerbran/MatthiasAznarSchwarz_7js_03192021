@@ -21,7 +21,8 @@ typeorm.createConnection({
     synchronize: true,
     entities: [
         require("./src/entity/Post"),
-        require("./src/entity/User")
+        require("./src/entity/User"),
+        require("./src/entity/PostUser_Linked")
     ]
 })
 .then(function (connection) {

@@ -1,6 +1,7 @@
 //Import the entity model
 const User = require('../entity/User');
 const Post = require('../entity/Post');
+const PostUser = require('../entity/PostUser_Linked');
 
 //Import de la librarie node qui permet de gerer les documents 
 const fs = require('fs');
@@ -18,15 +19,19 @@ exports.createPost = (request, response, next) => {
     Integere multer pour le chargement de nouvelles images. Et
     éventuellement faire un resize de ces dernières avant stockage.
     ----------------- à rajouter -------------------- */
-
+    console.log(request);
+    console.log("debeug n°0");
     try {
         const postRepo = connection.getRepository("Post");
-        const linkUserPostRepo = connection.getRepository("Post&User");
+        console.log("debeug n°0.1");
+        const linkUserPostRepo = connection.getRepository("PostUser");
+
+        console.log("debeug n°1");
 
         const post = postRepo.create({
             Post_Comment: request.body.comment,
             Post_Location: request.body.location,
-            Post_Picture: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`, //Post_Picture: "placeholder.png",
+            Post_Picture: `${request.protocol}://${request.get('host')}/images/${request.file.filename}`, //Post_Picture: "placeholder.png",
             Post_Creator_ID: request.body.user_id,
             Post_Creator: request.body.user         
         })
@@ -87,7 +92,11 @@ exports.getAllPostsApproved = (request, response, next) => {
     
     const postRepo = connection.getRepository("Post");
     try {
-        postRepo.find({ where : {Post_Review: "0"}})
+        postRepo.find({ 
+            where : {
+                Post_Review: "0"
+            }}
+        )
         .then((posts) => {
             return response.status(201).json(posts);
         })
@@ -98,6 +107,7 @@ exports.getAllPostsApproved = (request, response, next) => {
 };
 
 //Variante n°1 - optimisation : getALLPosts with review = 0 (for Home page)
+//NE FONCTIONNE PAS, car il manque la relation 'one to many'
 exports.getAllPostsProfileApproved = (request, response, next) => {
 
     const postRepo = connection.getRepository("Post");

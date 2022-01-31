@@ -13,7 +13,7 @@ router.get('/approvedFull', postCtrl.getAllPostsProfileApproved);   //à tester
 router.get('/unapproved', postCtrl.getAllPostsUnapproved);
 router.get('/:limit/:offset', postCtrl.getNextPosts);
 router.get('/:id', postCtrl.getOnePost);
-router.post('/', postCtrl.createPost);
+router.post('/', multer ,postCtrl.createPost);
 router.post('/modify', postCtrl.modifyPost);
 router.post('/review', postCtrl.reviewPost);
 router.delete('/:id', postCtrl.deletePost);                         //à tester
