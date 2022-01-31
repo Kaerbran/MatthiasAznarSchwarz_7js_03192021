@@ -19,14 +19,10 @@ exports.createPost = (request, response, next) => {
     Integere multer pour le chargement de nouvelles images. Et
     éventuellement faire un resize de ces dernières avant stockage.
     ----------------- à rajouter -------------------- */
-    console.log(request);
-    console.log("debeug n°0");
+
     try {
         const postRepo = connection.getRepository("Post");
-        console.log("debeug n°0.1");
         const linkUserPostRepo = connection.getRepository("PostUser");
-
-        console.log("debeug n°1");
 
         const post = postRepo.create({
             Post_Comment: request.body.comment,
@@ -38,9 +34,6 @@ exports.createPost = (request, response, next) => {
         postRepo.save(post)
         .then((postCreated) => {
             console.log(postCreated);
-
-            console.log("linkUserPostRepo existe?");
-            console.log(linkUserPostRepo);
 
             const linkUserPost = linkUserPostRepo.create({
                 Post_ID: postCreated.Post_ID,
