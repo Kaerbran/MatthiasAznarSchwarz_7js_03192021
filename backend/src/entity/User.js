@@ -17,6 +17,10 @@ module.exports = new EntitySchema({
             type: "varchar",
             lenght : 30
         },
+        Person_Admin: {
+            type: "boolean",
+            default: false
+        },
         Person_Name: {
             type: "varchar",
             lenght : 50

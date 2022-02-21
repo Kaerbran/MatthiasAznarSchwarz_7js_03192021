@@ -184,22 +184,29 @@ exports.modifyPost = (request, response, next) => {
 exports.reviewPost = (request, response, next) => {
     
     const postRepo = connection.getRepository("Post");
+    console.log("0");
+    console.log(request);
     postRepo.findOne({ Post_ID: request.body.Post_ID })
     .then((postToUpdate) => {
+        console.log("1");
+        console.log(postToUpdate);
         postToUpdate.Post_Review = request.body.reviewStatus;   //review status = 1 ou 0
         postRepo.save(postToUpdate)
     })
     .then((postUpdated) =>{
+        console.log("2");
         return response.status(201).json({ 
             message: 'Post modifié !', 
             post: postUpdated});
-    }).catch(error => response.status(500).json({ error }));
+    }).catch(error => response.status(500).json(error));
 }
 
 
 /* !!!!!!! NOT TESTED !!!!!!! */
 exports.deletePost = (request, response, next) => {
+    
     const postRepo = connection.getRepository("Post");
+    
     postRepo.findOne({ Post_ID: request.body.Post_ID })
     .then((post)=>{
         console.log("This post is about to be removed:", post);

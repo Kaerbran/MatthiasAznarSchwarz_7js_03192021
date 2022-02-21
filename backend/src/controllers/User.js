@@ -83,6 +83,7 @@ exports.modify = (request, response, next) => {
             console.log(userUpdated);
             return response.status(201).json({
                 userLogin: userUpdated.Person_Login,
+                userAdmin: user.Person_Admin,
                 userPicture: userUpdated.Person_Picture,
                 userEmail: userUpdated.Person_Email,
                 userId: userUpdated.Person_ID,
@@ -120,6 +121,7 @@ exports.login = (request, response, next) => {
                     { expiresIn: '24h' }
                 ),
                 userLogin: user.Person_Login,
+                PersonAdmin: user.Person_Admin,
                 userEmail: user.Person_Email,
                 userPicture: user.Person_Picture,
                 userName : user.Person_Name

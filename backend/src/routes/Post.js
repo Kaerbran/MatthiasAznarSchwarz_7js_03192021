@@ -8,14 +8,14 @@ const multer = require('../middlewares/multer-config');
 const auth = require('../middlewares/auth');
 
 router.get('/', postCtrl.getAllPosts);
-router.get('/approved', postCtrl.getAllPostsApproved);
+router.get('/approved', auth , postCtrl.getAllPostsApproved);
 router.get('/approvedFull', postCtrl.getAllPostsProfileApproved);   //à tester
-router.get('/unapproved', postCtrl.getAllPostsUnapproved);
+router.get('/unapproved', auth , postCtrl.getAllPostsUnapproved);
 router.get('/:limit/:offset', postCtrl.getNextPosts);
 router.get('/:id', postCtrl.getOnePost);
-router.post('/', multer ,postCtrl.createPost);
-router.post('/modify', postCtrl.modifyPost);
-router.post('/review', postCtrl.reviewPost);
-router.delete('/:id', postCtrl.deletePost);                         //à tester
+router.post('/', auth , multer ,postCtrl.createPost);
+router.post('/modify', auth , postCtrl.modifyPost);
+router.post('/review', auth , multer ,postCtrl.reviewPost);
+router.post('/delete', auth , multer ,postCtrl.deletePost);                         //à tester
 
 module.exports = router;
