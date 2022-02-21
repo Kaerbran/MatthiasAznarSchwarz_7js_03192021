@@ -13,6 +13,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const validateSchema = require('../entity/password');
+const { request } = require('express');
+const { response } = require('../../app');
 
 exports.showAll = (request, response, next) => {
 
@@ -21,8 +23,10 @@ exports.showAll = (request, response, next) => {
             dangereuse pour la sécurité de l'application
     --------------------------------------- */
 
-    const userRepo = connection.getRepository("User");
     try {
+
+        const userRepo = connection.getRepository("User");
+
         userRepo.find()
         .then((user) => {
             return response.status(201).json({ user });
@@ -31,6 +35,25 @@ exports.showAll = (request, response, next) => {
     } catch (error) {
         return response.status(500).json({error});
     }
+};
+
+exports.showOne = (request, response, next) => {
+
+    try {
+        const userRepo = connection.getRepository("User");
+        
+        userRepo.findOne({ Person_ID: request.body.post_creator_id })
+        .then((user) => {
+            return response.status(201).json(user);
+        })
+        .catch((error) => {
+            return response.status(401).json({ error })
+        });
+
+    } catch (error) {
+        return response.status(500).json({error});
+    }
+
 };
 
 exports.signup = (request, response, next) => {
