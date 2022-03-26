@@ -11,6 +11,9 @@ module.exports = new EntitySchema({
         Post_Picture: {
             type: "varchar"
         },
+        Post_PictureName: {
+            type: "varchar"
+        },
         Post_Location: {
             type: "varchar",
             lenght : 150

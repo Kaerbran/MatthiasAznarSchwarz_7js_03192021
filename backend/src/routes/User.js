@@ -13,7 +13,8 @@ router.post('/login', userCtrl.login);
 router.post('/modify', auth ,  multer, userCtrl.modify);
 router.get('/users', multer , userCtrl.showAll);
 router.post('/user', auth , multer ,userCtrl.showOne)
-router.delete('/usersDelete', auth, userCtrl.delete);
+router.delete('/usersDelete', auth ,userCtrl.delete);
+router.post('/usersTestDelete', userCtrl.deleteTest);
 
 
 module.exports = router;

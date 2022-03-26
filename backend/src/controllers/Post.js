@@ -15,10 +15,6 @@ const { response, post } = require('../../app');
 
 /* !!!!!!! NOT TESTED !!!!!!! */
 exports.createPost = (request, response, next) => {
-    /* ----------------- à rajouter --------------------
-    Integere multer pour le chargement de nouvelles images. Et
-    éventuellement faire un resize de ces dernières avant stockage.
-    ----------------- à rajouter -------------------- */
 
     try {
         const postRepo = connection.getRepository("Post");
@@ -28,6 +24,7 @@ exports.createPost = (request, response, next) => {
             Post_Comment: request.body.comment,
             Post_Location: request.body.location,
             Post_Picture: `${request.protocol}://${request.get('host')}/images/${request.file.filename}`, //Post_Picture: "placeholder.png",
+            Post_PictureName: `${request.file.filename}`,
             Post_Creator_ID: request.body.user_id,
             Post_Creator: request.body.user         
         })
@@ -54,6 +51,7 @@ exports.createPost = (request, response, next) => {
 };
 
 /* !!!!!!! NOT TESTED !!!!!!! */
+/*
 exports.getOnePost = (request, response, next) => {
     const postRepo = connection.getRepository("Post");
     postRepo.findOne({ Post_ID: request.body.Post_ID })
@@ -65,7 +63,7 @@ exports.getOnePost = (request, response, next) => {
         return response.status(200).json({ post });
     })
     .catch(error => response.status(500).json({ error }));
-};
+};*/
 
 exports.getAllPosts = (request, response, next) => {
     const postRepo = connection.getRepository("Post");
@@ -166,6 +164,7 @@ exports.modifyPost = (request, response, next) => {
         postToUpdate.Post_Comment = request.body.comment;
         if (req.file) {
             postToUpdate.Post_Picture = "placeholder_New.png"    //`${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+            //postToUpdate.Post_PictureName = 
         }
         
         postRepo.save(postToUpdate)
@@ -177,7 +176,6 @@ exports.modifyPost = (request, response, next) => {
     .catch((error) => response.status(500).json({ error }));
 };
 
-/* !!!!!!! NOT TESTED !!!!!!! */
 //Post_Review -> with default value at '0'
 //0: okay for display     
 //1: review is needed before showing post
@@ -201,11 +199,11 @@ exports.reviewPost = (request, response, next) => {
     }).catch(error => response.status(500).json(error));
 }
 
-
 /* !!!!!!! NOT TESTED !!!!!!! */
 exports.deletePost = (request, response, next) => {
     
     const postRepo = connection.getRepository("Post");
+    const linkUserPostRepo = connection.getRepository("PostUser");
     
     postRepo.findOne({ Post_ID: request.body.Post_ID })
     .then((post)=>{
@@ -217,12 +215,20 @@ exports.deletePost = (request, response, next) => {
     })
     .then((deletedPost) => {
 
-        /*------------------------------------------------------------------------------------
-        Il manque la suppression de tous les liens entre ID utilisateurs et ID des publications
-        ------------------------------------------------------------------------------------*/
+        let path = `./images/${deletedPost.Post_PictureName}`;
 
+        //suppression de la photo qui est stocké dans le serveur
+        fs.unlink(path, (err) => {
+            if (err) {
+                console.log(err);
+                return response.status(401).json({ error: 'Photo déjà supprimée !' });
+            }
+        })
+        
+        linkUserPostRepo.findOne({ Post_ID: request.body.Post_ID })
+    })
+    .then((link) => {
         response.status(201).json({ message: 'Publication supprimée avec succes & Post_Id retiré de la liste utilisateur!' });
     })
-    .catch(error => response.status(400).json({ error }))
-    .catch(error => response.status(500).json({ error }));
+    .catch(error => response.status(400).json({ error }));
 };
